@@ -21,32 +21,35 @@ class CountryCodeTable extends Component {
     );
   }
 
-  getTable({ data, fields }) {
-    return data ? ( // use data that was sent to the component
-      <Table striped responsive>
-        <thead>
-          <tr>{map(field => <FilterHeader name={field} />)(fields)}</tr>
-        </thead>
-        <tbody>{this.getRows({ data, fields })}</tbody>
-      </Table>
-    ) : (
-      <p>Loading data</p>
-    );
+  getTable(data) {
+    if (data) {
+      const fields = keys(data[0]); //make tbale independable from the data
+      // now the columns are whatever fields in the data exist
+      // component doesn't have to now the names of the fields
+      // but the data has to be well structured (and has some schema)
+      // better data structure -> better code
+      const { filters } = this.props.filters;
+      const filteredData = data; //sorting function based on filters goes here
+      return (
+        <Table striped responsive>
+          <thead>
+            <tr>{map(field => <FilterHeader name={field} />)(fields)}</tr>
+          </thead>
+          <tbody>{this.getRows({ filteredData, fields })}</tbody>
+        </Table>
+      );
+    } else {
+      return <p>Loading data</p>;
+    }
   }
 
   render() {
-    const data = this.props.externalData;
-    const fields = data ? keys(data[0]) : []; //make tbale independable from the data
-    // now the columns are whatever fields in the data exist
-    // component doesn't have to now the names of the fields
-    // but the data has to be well structured (and has some schema)
-    // better data structure -> better code
     return (
       <div>
         <Row key="header-row">
           <h1>Country Calling Codes</h1>
         </Row>
-        <Row key="body-row">{this.getTable({ data, fields })}</Row>,
+        <Row key="body-row">{this.getTable(this.props.externalData)}</Row>,
       </div>
     );
   }
@@ -54,7 +57,8 @@ class CountryCodeTable extends Component {
 
 CountryCodeTable.propTypes = {
   externalData: PropTypes.array,
-  initialiseApp: PropTypes.func.isRequired
+  initialiseApp: PropTypes.func.isRequired,
+  filters: PropTypes.object
 };
 
 export default CountryCodeTable;
