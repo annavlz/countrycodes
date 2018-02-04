@@ -49,9 +49,15 @@ const setupFilters = data => {
 };
 
 const updateFilters = (filters, activeFilterName) => {
-  const activeFilter = pick([activeFilterName], filters);
-  const updatedFilter = assoc("isActive", true, activeFilter);
-  return assoc(activeFilterName, updatedFilter, filters);
+  const fields = keys(filters);
+  return reduce((updatedFilters, field) => {
+    const filter = filters[field];
+    const updatedFilter =
+      field === activeFilterName
+        ? assoc("isActive", true, filter)
+        : assoc("isActive", false, filter);
+    return assoc(field, updatedFilter, updatedFilters);
+  })(filters, fields);
 };
 
 export default reducer;
