@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { map, keys } from "ramda";
 import { Row, Table } from "react-bootstrap";
+import { FilterHeader } from "../../components";
 
 class CountryCodeTable extends Component {
   componentDidMount() {
@@ -24,7 +25,7 @@ class CountryCodeTable extends Component {
     return data ? ( // use data that was sent to the component
       <Table striped responsive>
         <thead>
-          <tr>{map(field => <th>{field}</th>)(fields)}</tr>
+          <tr>{map(field => <FilterHeader name={field} />)(fields)}</tr>
         </thead>
         <tbody>{this.getRows({ data, fields })}</tbody>
       </Table>
